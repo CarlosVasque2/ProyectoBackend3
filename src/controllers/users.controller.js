@@ -1,35 +1,54 @@
-import { usersService } from "../services/index.js"
+import { usersService } from '../services/usersService.js';
 
-const getAllUsers = async(req,res)=>{
-    const users = await usersService.getAll();
-    res.send({status:"success",payload:users})
-}
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await usersService.getAll();
+        res.json({ status: 'success', payload: users });
+    } catch (error) {
+        res.status(500).json({ status: 'error', error: error.message });
+    }
+};
 
-const getUser = async(req,res)=> {
-    const userId = req.params.uid;
-    const user = await usersService.getUserById(userId);
-    if(!user) return res.status(404).send({status:"error",error:"User not found"})
-    res.send({status:"success",payload:user})
-}
+const getUser = async (req, res) => {
+    try {
+        const { uid } = req.params;
+        const user = await usersService.getById(uid);
+        if (!user) {
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+        res.json({ status: 'success', payload: user });
+    } catch (error) {
+        res.status(500).json({ status: 'error', error: error.message });
+    }
+};
 
-const updateUser =async(req,res)=>{
-    const updateBody = req.body;
-    const userId = req.params.uid;
-    const user = await usersService.getUserById(userId);
-    if(!user) return res.status(404).send({status:"error", error:"User not found"})
-    const result = await usersService.update(userId,updateBody);
-    res.send({status:"success",message:"User updated"})
-}
+const updateUser = async (req, res) => {
+    try {
+        const { uid } = req.params;
+        const updatedUser = await usersService.update(uid, req.body);
+        res.json({ status: 'success', payload: updatedUser });
+    } catch (error) {
+        res.status(500).json({ status: 'error', error: error.message });
+    }
+};
 
-const deleteUser = async(req,res) =>{
-    const userId = req.params.uid;
-    const result = await usersService.getUserById(userId);
-    res.send({status:"success",message:"User deleted"})
-}
+const deleteUser = async (req, res) => {  // Aquí también cambiamos el nombre a deleteUser
+    try {
+        const { uid } = req.params;
+        const result = await usersService.deleteUser(uid);  // Usamos la función con el nuevo nombre
+        if (!result) {
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+        res.json({ status: 'success', message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ status: 'error', error: error.message });
+    }
+};
 
 export default {
-    deleteUser,
     getAllUsers,
     getUser,
-    updateUser
-}
+    updateUser,
+    deleteUser,  // Aquí también cambiamos el nombre
+};
+
