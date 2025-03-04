@@ -1,5 +1,9 @@
-import User from '../models/User.js';
+// src/services/usersService.js
 
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';  // Asegúrate de importar bcryptjs
+
+// Función para obtener todos los usuarios
 const getAll = async () => {
     try {
         const users = await User.find();
@@ -9,6 +13,7 @@ const getAll = async () => {
     }
 };
 
+// Función para obtener un usuario por ID
 const getById = async (id) => {
     try {
         const user = await User.findById(id);
@@ -18,15 +23,27 @@ const getById = async (id) => {
     }
 };
 
+// Función para crear varios usuarios
 const createMany = async (users) => {
     try {
-        const result = await User.insertMany(users);
+        // Iteramos sobre cada usuario y encriptamos la contraseña
+        const usersWithEncryptedPassword = await Promise.all(
+            users.map(async (user) => {
+                const salt = await bcrypt.genSalt(10);  // Generamos un "salt" para encriptar
+                user.password = await bcrypt.hash(user.password, salt);  // Encriptamos la contraseña
+                return user;
+            })
+        );
+        
+        // Insertamos los usuarios con las contraseñas encriptadas
+        const result = await User.insertMany(usersWithEncryptedPassword);
         return result;
     } catch (error) {
         throw new Error(error.message);
     }
 };
 
+// Función para actualizar un usuario
 const update = async (id, userData) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(id, userData, { new: true });
@@ -36,6 +53,7 @@ const update = async (id, userData) => {
     }
 };
 
+// Función para eliminar un usuario
 const deleteUser = async (id) => {
     try {
         const deletedUser = await User.findByIdAndDelete(id);
@@ -52,5 +70,6 @@ export const usersService = {
     update,
     deleteUser, 
 };
+
 
 

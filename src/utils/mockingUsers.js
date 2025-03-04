@@ -1,12 +1,17 @@
 import bcrypt from 'bcrypt';
 import faker from 'faker';
+import { Types } from 'mongoose';  // Importamos Types para generar ObjectId
 
 const generateMockUsers = (num) => {
+    if (typeof num !== 'number' || num <= 0) {
+        throw new Error('El número de usuarios debe ser un valor numérico mayor que 0');
+    }
+
     const users = [];
 
     for (let i = 0; i < num; i++) {
         const user = {
-            _id: faker.datatype.uuid(),
+            _id: new Types.ObjectId(),  // Usar ObjectId de MongoDB en lugar de faker.datatype.uuid
             firstName: faker.name.firstName(),
             lastName: faker.name.lastName(),
             email: faker.internet.email(),
@@ -22,3 +27,4 @@ const generateMockUsers = (num) => {
 };
 
 export { generateMockUsers };
+
