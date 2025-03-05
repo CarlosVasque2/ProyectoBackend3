@@ -1,6 +1,6 @@
 // src/services/usersService.js
 
-import User from '../models/User.js';
+import User from '../dao/models/User.js';
 import bcrypt from 'bcryptjs';  // Asegúrate de importar bcryptjs
 
 // Función para obtener todos los usuarios

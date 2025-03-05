@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import faker from 'faker';
+import { faker } from '@faker-js/faker';  // Cambié esta línea para usar la nueva librería
 import { Types } from 'mongoose';  // Importamos Types para generar ObjectId
 
 const generateMockUsers = (num) => {
@@ -16,7 +16,7 @@ const generateMockUsers = (num) => {
             lastName: faker.name.lastName(),
             email: faker.internet.email(),
             password: bcrypt.hashSync('coder123', 10),  // Contraseña encriptada
-            role: faker.random.arrayElement(['user', 'admin']),  // Puede ser "user" o "admin"
+            role: faker.helpers.arrayElement(['user', 'admin']),  // Puede ser "user" o "admin"
             pets: [],  // Array vacío para las mascotas
         };
 
@@ -27,4 +27,5 @@ const generateMockUsers = (num) => {
 };
 
 export { generateMockUsers };
+
 

@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import { generatePets } from '../utils/mockingPets.js';  // Usamos la función correcta para generar mascotas
-import { generateUsers } from '../utils/mockingUsers.js';  // Usamos la función correcta para generar usuarios
+import { generateMockUsers } from '../utils/mockingUsers.js';  // Usamos la función correcta para generar usuarios
 import { petsService } from '../services/petsService.js';
 import { usersService } from '../services/usersService.js';
 
@@ -23,7 +23,7 @@ router.get('/mockingpets', async (req, res) => {
 router.get('/mockingusers', async (req, res) => {
     try {
         const num = parseInt(req.query.num) || 50;  // Recibimos un parámetro 'num' para generar un número específico de usuarios
-        const mockUsers = generateUsers(num);  // Generamos los usuarios
+        const mockUsers = generateMockUsers(num);  // Generamos los usuarios
         res.json({ status: 'success', payload: mockUsers });  // Respondemos con los usuarios generados
     } catch (error) {
         res.status(500).json({ status: 'error', error: error.message });
@@ -39,7 +39,7 @@ router.post('/generateData', async (req, res) => {
         }
 
         // Generamos los usuarios y mascotas
-        const generatedUsers = generateUsers(users);  // Generamos los usuarios con el número solicitado
+        const generatedUsers = generateMockUsers(users);  // Generamos los usuarios con el número solicitado
         const generatedPets = generatePets(pets);    // Generamos las mascotas con el número solicitado
 
         // Insertamos los datos en la base de datos

@@ -1,4 +1,4 @@
-import Pet from '../models/Pet.js';
+import Pet from '../dao/models/Pet.js';
 
 const createMany = async (pets) => {
     try {
