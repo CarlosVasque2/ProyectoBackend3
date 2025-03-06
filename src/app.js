@@ -1,4 +1,3 @@
-// src/app.js
 import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
@@ -25,19 +24,68 @@ const swaggerOptions = {
             title: "API de Adopción de Mascotas",
             version: "1.0.0",
             description: "Documentación de la API para la gestión de usuarios, mascotas y adopciones."
+        },
+        components: {
+            schemas: {
+                User: {
+                    type: "object",
+                    properties: {
+                        _id: {
+                            type: "string",
+                            description: "ID autogenerado por MongoDB"
+                        },
+                        name: {
+                            type: "string",
+                            description: "Nombre del usuario"
+                        },
+                        email: {
+                            type: "string",
+                            description: "Correo electrónico del usuario"
+                        },
+                        password: {
+                            type: "string",
+                            description: "Contraseña encriptada del usuario"
+                        },
+                        role: {
+                            type: "string",
+                            enum: ["user", "admin"],
+                            description: "Rol del usuario en el sistema"
+                        },
+                        pets: {
+                            type: "array",
+                            items: {
+                                type: "string"
+                            },
+                            description: "Lista de IDs de mascotas adoptadas"
+                        }
+                    },
+                    example: {
+                        _id: "60d0fe4f5311236168a109ca",
+                        name: "Juan Pérez",
+                        email: "juan@example.com",
+                        password: "$2b$10$hashedpassword",
+                        role: "user",
+                        pets: []
+                    }
+                }
+            }
         }
     },
-    apis: ["./src/routes/*.js"] // Documentará las rutas en la carpeta 'routes'
+    apis: ["./src/routes/*.js"]
 };
 
 const specs = swaggerJsdoc(swaggerOptions);
+
+// Configurar Mongoose para evitar advertencias de deprecación
+mongoose.set('strictQuery', false);
 
 // Conectar a MongoDB usando la variable de entorno
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(() => console.log('Conectado a MongoDB'))
-  .catch(err => console.error('Error al conectar a MongoDB:', err));
+})
+.then(() => console.log('Conectado a MongoDB'))
+.catch(err => console.error('Error al conectar a MongoDB:', err));
 
 app.use(express.json());
 app.use(cookieParser());
